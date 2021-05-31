@@ -96,54 +96,56 @@ int knuth_morris_pratt(char *text, char *pattern){
 	//printf("pi[]={ ");
 	
 	//for(int i=0;i<pattern_length-1;i++){
-		//printf("%d |",pi[i]);
+	//	printf("%d |",pi[i]);
 	//}
 	
 	//printf("%d }\n", pi[pattern_length-1]);
-	
-	
-	//busca do padrao
-	int i=0,j=0,m=pattern_length,n=text_length;
-	
-	while (i < text_length) {
-        if (pattern[j] == text[i]) {
-            j++;
-            i++;
-        }
-  
-        if (j == pattern_length) {
-            printf("Found pattern at index %d ", i - j);
-            j = pi[j - 1];
-        }
-        else if (i < text_length && pattern[j] != text[i]) {
 
-            if (j != 0)
-                j = pi[j - 1];
-            else
-                i = i + 1;
-        }
-    }
-	/*
+	//busca do padrao
+	
 	for(int i=0,j=-1;i<text_length;i++){
-		while(j>=0 && pattern[j+1]!=text[i])
+		
+		
+		//printf(">>%s | %*.*s\n",pattern, pattern_length, pattern_length, text+i);
+		//printf("%d: j=%d\n",i,j);
+		while(j>=0 && pattern[j+1]!=text[i]){
+			//printf("pi[%d]=%d\n",j,pi[j]);
 			j=pi[j];
+		}
 		if(pattern[j+1]==text[i]){
 			j=j+1;
+			//printf("MATCH:j= %d\n", j);
 		}
 		
-		printf("%s | %*.*s\n",pattern, pattern_length, pattern_length, text+i);
-		
-		if(j==pattern_length){
-			printf("Padrao encontrado em %d.\n",i);
-			printf("Padrao: %*.*s\n",pattern_length, pattern_length, text+i);
+		if(j==pattern_length-1){
+			printf("Padrao encontrado em %d.\n",i-pattern_length+1);
+			printf("Padrao: %*.*s\n",pattern_length, pattern_length, text+i-pattern_length+1);
 			j=pi[j];
 		}
 	}
-	*/
+	
 }
 
+#define SIGMA 256 // tamanho do alfabeto ascii
+
+int boyer_moore(char *text,char *pattern){
+	int pattern_length, text_length, badCharShift[SIGMA];
+	
+	pattern_length = strlen(pattern);
+	text_length = strlen(text);
+	//preprocessamento
+	for(int i = 0;i<SIGMA;i++)
+		badCharShift[i]=m;
+	for(int i = 0;i<m-1;i++)
+		badCharShift[(int)pattern[i]]=m-i-1;
+	
+	
+		
+}
+
+/*
 int pi(char *text,char *pattern){
-		int pattern_length,text_length;
+	int pattern_length,text_length;
 	
 	pattern_length = strlen(pattern);
 	text_length = strlen(text);
@@ -176,7 +178,7 @@ int pi(char *text,char *pattern){
 	printf("%d }\n", pi[pattern_length-1]);
 	
 	
-}
+}*/
 
 
 
@@ -220,9 +222,9 @@ int main(){
     
     rabin_karp(buffer,pattern,10,13);
 	
-	printf(">> pi[]:\n");
+	//printf(">> pi[]:\n");
 	
-	pi(buffer,pattern);
+	//pi(buffer,pattern);
 	
 	printf(">> KMP:\n");
 	
