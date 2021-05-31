@@ -3,184 +3,10 @@
 #include <string.h>
 #include <math.h>
 
-int brute_force(char *text,char *pattern){
-    size_t i,j,text_length, pattern_length;
-    text_length = strlen(text);
-    pattern_length = strlen(pattern);
-    int lines = 1;
-    size_t n = text_length - pattern_length;
-
-    for(i=0;i<=n;i++){
-        if(text[i]=='\n'){
-            lines++;
-        }
-        if(strncmp(pattern,text+i,pattern_length) == 0){
-			printf("Padrao encontrado em %d.\n",i);
-			printf("Padrao: %*.*s\n",pattern_length, pattern_length, text+i);
-            printf("linhas lidas: %d\n", lines);
-            return i;
-		}
-    }
-    printf("Padrao nao encontrado. Linhas lidas: %d\n", lines);
-    return -1;
-}
-
-int rabin_karp(char *text, char *pattern, int d, int modulus){
-    int text_length, pattern_length,j;
-
-    text_length = strlen(text);
-    pattern_length = strlen(pattern);
-
-    int n = text_length - pattern_length;
-
-    int h = 1; //
-    int p = 0; //'hash' do padrao
-    int t = 0; //'hash' do bloco de texto atual
-
-    for(int i = 0;i<pattern_length-1;i++){
-        h = (h*d)%modulus;
-    }
-
-    //pre-processamento
-    for(int i = 0;i<pattern_length;i++){
-        p = (d*p+pattern[i])%modulus;
-        t = (d*t+text[i])%modulus;
-    }
-
-    printf("preprocessamento:\n p = %d, t =  %d, h = %d\n",p,t,h);
-
-    //busca do padrao
-    for(int i=0;i<=n;i++){
-        if(p == t && strncmp(pattern,text+i,pattern_length)==0){
-			printf("Padrao encontrado em %d.\n",i);
-			printf("Padrao: %*.*s\n",pattern_length, pattern_length, text+i);
-			return i;
-		}
-        if(i<=n){
-            t = (d*(t-text[i]*h)+text[i+pattern_length])%modulus;
-			if(t<0){
-				t= t+modulus;
-			}
-        }
-    }
-    printf("bad\n");
-    return -1;
-
-}
-
-int knuth_morris_pratt(char *text, char *pattern){
-	int pattern_length,text_length;
-	
-	pattern_length = strlen(pattern);
-	text_length = strlen(text);
-	
-	int pi[pattern_length+1];
-	
-	int k=-1;
-
-	//preprocessamento 
-	if(pattern_length > 0) pi[0] = -1;
-	
-	for(int q=1; q<pattern_length;q++){
-		//printf("antes>> q: %d k: %d\n",q,k);
-		while(k>=0 && pattern[k+1]!=pattern[q]){
-			//printf("AQUI k= %d , P[%d]=%c e P[%d]=%c\n",k,k+1,pattern[k+1],q,pattern[q]);
-			k=pi[k];
-		}
-		if(pattern[k+1]==pattern[q])
-			k=k+1;
-		pi[q]=k+1;
-		
-		//printf("pos>> q: %d k: %d\n",q,k);
-	}
-	//printf("pi[]={ ");
-	
-	//for(int i=0;i<pattern_length-1;i++){
-	//	printf("%d |",pi[i]);
-	//}
-	
-	//printf("%d }\n", pi[pattern_length-1]);
-
-	//busca do padrao
-	
-	for(int i=0,j=-1;i<text_length;i++){
-		
-		
-		//printf(">>%s | %*.*s\n",pattern, pattern_length, pattern_length, text+i);
-		//printf("%d: j=%d\n",i,j);
-		while(j>=0 && pattern[j+1]!=text[i]){
-			//printf("pi[%d]=%d\n",j,pi[j]);
-			j=pi[j];
-		}
-		if(pattern[j+1]==text[i]){
-			j=j+1;
-			//printf("MATCH:j= %d\n", j);
-		}
-		
-		if(j==pattern_length-1){
-			printf("Padrao encontrado em %d.\n",i-pattern_length+1);
-			printf("Padrao: %*.*s\n",pattern_length, pattern_length, text+i-pattern_length+1);
-			j=pi[j];
-		}
-	}
-	
-}
-
-#define SIGMA 256 // tamanho do alfabeto ascii
-
-int boyer_moore(char *text,char *pattern){
-	int pattern_length, text_length, badCharShift[SIGMA];
-	
-	pattern_length = strlen(pattern);
-	text_length = strlen(text);
-	//preprocessamento
-	for(int i = 0;i<SIGMA;i++)
-		badCharShift[i]=m;
-	for(int i = 0;i<m-1;i++)
-		badCharShift[(int)pattern[i]]=m-i-1;
-	
-	
-		
-}
-
-/*
-int pi(char *text,char *pattern){
-	int pattern_length,text_length;
-	
-	pattern_length = strlen(pattern);
-	text_length = strlen(text);
-	
-	int pi[pattern_length+1];
-	
-	int k=-1;
-
-	//preprocessamento 
-	if(pattern_length > 0) pi[0] = -1;
-	
-	for(int q=1; q<pattern_length;q++){
-		printf("antes>> q: %d k: %d\n",q,k);
-		while(k>=0 && pattern[k+1]!=pattern[q]){
-			printf("AQUI k= %d , P[%d]=%c e P[%d]=%c\n",k,k+1,pattern[k+1],q,pattern[q]);
-			k=pi[k];
-		}
-		if(pattern[k+1]==pattern[q])
-			k=k+1;
-		pi[q]=k+1;
-		
-		printf("pos>> q: %d k: %d\n",q,k);
-	}
-	printf("pi[]={ ");
-	
-	for(int i=0;i<pattern_length-1;i++){
-		printf("%d |",pi[i]);
-	}
-	
-	printf("%d }\n", pi[pattern_length-1]);
-	
-	
-}*/
-
-
+#include "boyer_moore.c"
+#include "KMP.c"
+#include "rabin_karp.c"
+#include "brute_force.c"
 
 int main(){
     char filename[100];
@@ -220,7 +46,7 @@ int main(){
 
     printf(">> Rabin-Karp: \n");
     
-    rabin_karp(buffer,pattern,10,13);
+    rabin_karp(buffer,pattern,256,7919);
 	
 	//printf(">> pi[]:\n");
 	
@@ -229,5 +55,9 @@ int main(){
 	printf(">> KMP:\n");
 	
 	knuth_morris_pratt(buffer,pattern);
+	
+	printf(">> Boyer-Moore: \n");
+	
+	boyer_moore(buffer,pattern);
 
 }
