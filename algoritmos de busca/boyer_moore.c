@@ -33,19 +33,6 @@ long long boyer_moore(char *text,char *pattern, long long text_length){
 	//	printf("%d ",badCharShift[i]);
 	//}
 	//printf("]\n");
-	/*
-	long long skip = 0;
-	
-	while(text_length-skip>= pattern_length){
-		if(strncmp(text+skip,pattern,pattern_length)==0){
-			printf("Padrao encontrado em %d.\n",skip);
-			printf("Padrao: %*.*s\n",pattern_length, pattern_length, text+skip);
-			count++;
-		}
-		
-		skip = skip + badCharShift[(long long)text[skip+pattern_length-1]];
-	}
-	*/
 	
 	long long i = pattern_length - 1;
 	long long j;
